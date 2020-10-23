@@ -1,0 +1,6 @@
+<items>
+    <tabVisibilities>
+        <tab>[TabName]</tab>
+        <visibility>[DefaultOn]</visibility>
+    </tabVisibilities>
+</items>

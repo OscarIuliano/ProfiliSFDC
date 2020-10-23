@@ -1,0 +1,11 @@
+<items>
+    <objectPermissions>
+        <allowCreate>[boolean]</allowCreate>
+        <allowDelete>[boolean]</allowDelete>
+        <allowEdit>[boolean]</allowEdit>
+        <allowRead>[boolean]</allowRead>
+        <modifyAllRecords>[boolean]</modifyAllRecords>
+        <object>[objectName]</object>
+        <viewAllRecords>[boolean]</viewAllRecords>
+    </objectPermissions>
+</items>

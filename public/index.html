@@ -1,0 +1,128 @@
+<html>
+<head>
+  <title>Tool Profili SFDC</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="index.css">
+  
+</head>
+
+  <body>
+    <div class="jumbotron"  style="padding:40px;">
+        <h1>Modifica sui Profili SFDC</h1>
+        <p>
+            <label for="email">Email Login SFDC</label><br>
+            <input id="username" type="email" name="email">
+            <br>
+            <label for="password">Password</label><br>
+            <input id="password" type="password" name ="password">
+        </p>
+      <p><button id="loginBtton" class="btn btn-primary btn-lg" href="#" role="button">Login</button></p>
+        <span id="login-result"></span>
+
+        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#objectPermissions">Open Object Permission</button>
+        <div class="panel panel-default collapse" id ='objectPermissions' style="pointer-events: none;">
+          <div class="panel-body">
+            <p>
+              <select id="objectPermissions_select" name="objectItem"  class="form-control" >
+                <option value="--NONE--">--NONE--</option>
+              </select>
+            </p>
+            <p>
+              <button id="getAllObj" class="btn btn-primary btn-lg" href="#" role="button">Get all SObject</button>
+            </p>
+            <p>
+              <button id="agg0" class="aggiungiPartialXML btn btn-success btn-lg" href="#" role="button"  onclick="addPartialXML()">Aggiungi</button>
+            </p>
+            <p>
+            <select id="fieldPermissions_select" name="fieldItem"  class="form-control" >
+              <option value="--NONE--">--NONE--</option>
+            </select>
+            </p>
+            <p>
+              <button id="getAllField" class="btn btn-primary btn-lg" href="#" role="button">Get all Fields</button>
+            </p>
+            <p>
+              <button id="agg1" class="aggiungiPartialXML btn btn-success btn-lg" href="#" role="button" onclick="addPartialXML()">Aggiungi</button>
+            </p>
+          </div>
+        </div>
+        
+        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#classAccesses">Open Class permission</button>
+        <div class="panel panel-default collapse" id ='classAccesses' style="pointer-events: none;">
+          <div class="panel-body">
+          <p>
+            <select id="classAccesses_select" name="classItem"  class="form-control" >
+              <option value="--NONE--">--NONE--</option>
+            </select>
+          </p>
+          <p>
+            <button id="getAllclass" class="btn btn-primary btn-lg" href="#" role="button">Get all Classes</button>
+          </p>
+          <p>
+            <button id="agg2" class="aggiungiPartialXML btn btn-success btn-lg" href="#" role="button">Aggiungi</button>
+          </p>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#pageAccesses">Open Pages Permission</button>
+        <div class="panel panel-default collapse" id ='pageAccesses' style="pointer-events: none;">
+          <div class="panel-body">
+          <p>
+            <select id="pageAccesses_select" name="classItem"  class="form-control" >
+              <option value="--NONE--">--NONE--</option>
+            </select>
+          </p>
+          <p>
+            <button id="getAllPage" class="btn btn-primary btn-lg" href="#" role="button">Get all Page</button>
+          <p>
+            <p>
+              <button id="agg4" class="aggiungiPartialXML btn btn-success btn-lg" href="#" role="button">Aggiungi</button>
+            </p>
+          </div>
+        </div>
+
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-8">
+          <label for="path">Path profili</label><br>
+          <input id="inputPath" type="text" name="path"/>
+          <span id="error-path" style="color:red;"></span>
+          <button id="myButton" class="btn btn-primary btn-lg" href="#" role="button">Conferma</button>
+        </div>
+        <div class="col-md-4">
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <select id="profileList" name="profileList" multiple class="form-control">
+          </select>
+          <textarea name="display" id="display" placeholder="Profili selezionati" readonly class="form-control" aria-label="With textarea"></textarea><!-- cols="20" rows="4" -->
+          <span id="error-profile"  style="color:red;"></span>
+        </div>
+        <div class="col-md-4">
+          <select id="permissionList" name="permissionItem"  class="form-control" >
+            <option value="--NONE--">--NONE--</option>
+          </select>
+          <textarea id="textXML" name="textXML" style="background-color: #383838;color:rgb(113, 216, 255);margin: 0px;height: 350px;overflow-y: auto;" cols="50" class="form-control" aria-label="With textarea"></textarea>
+          <span id="error-xml" style="color:red;"></span>
+          <button id="addVisibility" class="btn btn-primary btn-lg" href="#" role="button">Aggiungi</button>
+          <button id="removeVisibility" class="btn btn-danger btn-lg"  href="#" role="button">Rimuovi</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay"></div>
+    <div class="spanner" style="height: 100%;">
+      <div class="loader"></div>
+      <p>Caricamento</p>
+    </div>
+
+  </body>
+<script type="text/javascript" src="index.js"></script>
+</html>

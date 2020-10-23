@@ -1,0 +1,6 @@
+<items>
+    <userPermissions>
+        <enabled>[boolean]</enabled>
+        <name>[userPermissionName]</name>
+    </userPermissions>
+</items>

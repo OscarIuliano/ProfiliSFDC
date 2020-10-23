@@ -1,0 +1,7 @@
+<items>
+    <fieldPermissions>
+        <editable>[boolean]</editable>
+        <field>[objectName].[fieldApiName]</field>
+        <readable>[boolean]</readable>
+    </fieldPermissions>
+</items>

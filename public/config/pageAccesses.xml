@@ -1,0 +1,6 @@
+<items>
+    <pageAccesses>
+        <apexPage>[pageName]</apexPage>
+        <enabled>[boolean]</enabled>
+    </pageAccesses>
+</items>

@@ -1,0 +1,7 @@
+<items>
+    <recordTypeVisibilities>
+        <default>[boolean]</default>
+        <recordType>[objectName].[RecordTypeDevName]</recordType>
+        <visible>[boolean]</visible>
+    </recordTypeVisibilities>
+</items>

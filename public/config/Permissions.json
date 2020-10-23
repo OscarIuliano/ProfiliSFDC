@@ -1,0 +1,50 @@
+[
+    {
+        "key": "applicationVisibilities",
+        "value": "application"
+    },
+    {
+        "key": "classAccesses",
+        "value": "apexClass"
+    },
+    {
+        "key": "fieldPermissions",
+        "value": "field"
+    },
+    {
+        "key": "layoutAssignments",
+        "value": "recordType"
+    },
+    {
+        "key": "loginIpRanges",
+        "value": "endAddress"
+    },
+    {
+        "key": "objectPermissions",
+        "value": "object"
+    },
+    
+    {
+        "key": "pageAccesses",
+        "value": "apexPage"
+    },
+    
+    {
+        "key": "recordTypeVisibilities",
+        "value": "recordType"
+    },
+    
+    {
+        "key": "tabVisibilities",
+        "value": "tab"
+    },
+    {
+        "key": "userPermissions",
+        "value": "name"
+    },
+    {
+        "key": "customElement",
+        "value": "element"
+    }
+
+]

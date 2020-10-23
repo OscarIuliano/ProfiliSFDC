@@ -1,0 +1,7 @@
+<items>
+    <applicationVisibilities>
+        <application>[applicationName]</application>
+        <default>[boolean]</default>
+        <visible>[boolean]</visible>
+    </applicationVisibilities>
+</items>

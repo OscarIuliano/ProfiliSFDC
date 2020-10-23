@@ -1,0 +1,6 @@
+<items>
+    <layoutAssignments>
+        <layout>[LayoutName]</layout>
+        <recordType>[ObjectName].[RecordTypeDevName]</recordType>
+    </layoutAssignments>
+</items>

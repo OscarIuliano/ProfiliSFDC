@@ -1,0 +1,6 @@
+<items>
+    <classAccesses>
+        <apexClass>[className]</apexClass>
+        <enabled>[boolean]</enabled>
+    </classAccesses>
+</items>
