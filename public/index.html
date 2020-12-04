@@ -11,17 +11,29 @@
 
   <body>
     <div class="jumbotron"  style="padding:40px;">
-        <h1>Modifica sui Profili SFDC</h1>
-        <p>
-            <label for="email">Email Login SFDC</label><br>
-            <input id="username" type="email" name="email">
-            <br>
-            <label for="password">Password</label><br>
-            <input id="password" type="password" name ="password">
-        </p>
-      <p><button id="loginBtton" class="btn btn-primary btn-lg" href="#" role="button">Login</button></p>
-        <span id="login-result"></span>
-
+      <h1>Modifica sui Profili SFDC</h1>
+      <form>
+        <div class="form-group">
+          <label for="enviroment">Seleziona l'ambiente</label>
+          <select class="form-control" id="enviromentPicklist">
+            <option value="https://test.salesforce.com">Sandbox</option>
+            <option value="https://login.salesforce.com">Production</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="email">Username</label><br>
+          <input id="username" type="email" name="email">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label><br>
+          <input id="password" type="password" name ="password">
+        </div>
+      </form>
+      <div class="form-group">
+        <button id="loginBtton" class="btn btn-primary btn-lg" role="button">Login</button></p>         
+      </div>
+      <span id="login-result"></span>
+      <form>
         <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#objectPermissions">Open Object Permission</button>
         <div class="panel panel-default collapse" id ='objectPermissions' style="pointer-events: none;">
           <div class="panel-body">
@@ -83,7 +95,8 @@
             </p>
           </div>
         </div>
-
+        <button type="button" class="btn btn-info" data-toggle="collapse" id ='getProfileInfo'>Get Profile info</button>
+      </form>
     </div>
 
     <div class="container-fluid">
@@ -122,7 +135,6 @@
       <div class="loader"></div>
       <p>Caricamento</p>
     </div>
-
   </body>
 <script type="text/javascript" src="index.js"></script>
 </html>

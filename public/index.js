@@ -230,9 +230,11 @@ loginButton.addEventListener('click',function(e){
 
   var usernameJs = document.getElementById('username').value;
   var passwordJs = document.getElementById('password').value;
+  var enviromentValue = document.getElementById('enviromentPicklist').value;
+
   $("div.spanner").addClass("show");
   console.log('login button');
-  fetch('/loginSFDC', {method: 'POST',headers: {'Content-Type': 'application/json'},body:JSON.stringify({ username: usernameJs,password:passwordJs})})
+  fetch('/loginSFDC', {method: 'POST',headers: {'Content-Type': 'application/json'},body:JSON.stringify({ username: usernameJs,password:passwordJs,enviroment:enviromentValue})})
       .then(response => response.text())
       .then(data => {
         document.getElementById('login-result').innerHTML = data;
@@ -397,3 +399,26 @@ document.querySelectorAll('.aggiungiPartialXML').forEach(item => {
     document.getElementById('textXML').value = document.getElementById('textXML').value.trim();
   })
 })
+
+
+const button2 = document.getElementById('getProfileInfo');
+
+button2.addEventListener('click', function(e) {
+console.log('button was clicked');
+
+let profileToAddIt = document.getElementById('display').value;
+console.log(profileToAddIt);
+let itemList = profileToAddIt.split(', ');
+
+
+let result = 'oK fatto!';
+itemList.forEach(function(item, index, array) {
+
+  fetch('/retrieveProfileFromOrg', {method: 'POST', headers: {'Content-Type': 'application/json'},body:JSON.stringify({profile: item})})
+    .then(response => response.text())
+    .then(data => {
+      console.log(data);
+      result = data;
+      })
+  });
+});

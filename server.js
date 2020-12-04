@@ -9,12 +9,12 @@ const xml2js = require('xml2js');
 const format = require('xml-formatter');
 const sf = require('node-salesforce');
 const path = require('path');
+var jsforce = require('jsforce');
 
 
-
-var conn = new sf.Connection({
+var conn = new jsforce.Connection({
   // you can change loginUrl to connect to sandbox or prerelease env.
-  loginUrl : 'https://test.salesforce.com'
+  //loginUrl : 'https://test.salesforce.com'
 });
 
 let profilePath = '';
@@ -89,6 +89,7 @@ app.post('/profileList', (req, res)=>{
 
 app.get('/getPermission',(req,res)=>{
 
+    console.log(__dirname);
     fs.readFile(__dirname+'/public/config/Permissions.json', 'utf8', function(err, data){ 
       
         // Display the file content 
@@ -244,8 +245,11 @@ app.post('/loginSFDC', (req,res) =>{
 
   var username = req.body.username;
   var password = req.body.password;
+  var enviroment =req.body.enviroment;
+
+  conn.loginUrl = enviroment;
    
-console.log('login button');
+  console.log('login button');
   conn.login(username, password, function(err, userInfo) {
     if (err) { return res.send('Abbiamo riscontrato un errore: '+err); }
     // Now you can get the access token and instance URL information.
@@ -310,6 +314,65 @@ app.get('/retrieveAllField/:object',(req,res)=>{
     return res.send(meta.fields);
     // ...
   }); 
+});
+
+app.post('/retrieveProfileFromOrg',(req,res)=>{
+
+  let objectName = req.params.object;
+  var types = [{type: 'Profile', folder: null}];
+  /*
+  conn.metadata.list(types, '49.0', function(err, metadata) {
+    if (err) { return console.error('err', err); }
+      var meta = metadata[0];
+      console.log('metadata count: ' + metadata.length);
+      console.log('createdById: ' + meta.createdById);
+      console.log('createdByName: ' + meta.createdByName);
+      console.log('createdDate: ' + meta.createdDate);
+      console.log('fileName: ' + meta.fileName);
+      console.log('fullName: ' + meta.fullName);
+      console.log('id: ' + meta.id);
+      console.log('lastModifiedById: ' + meta.lastModifiedById);
+      console.log('lastModifiedByName: ' + meta.lastModifiedByName);
+      console.log('lastModifiedDate: ' + meta.lastModifiedDate);
+      console.log('manageableState: ' + meta.manageableState);
+      console.log('namespacePrefix: ' + meta.namespacePrefix);
+      console.log('type: ' + meta.type);
+
+      
+    }); 
+    */
+    console.log('getPRofile');
+
+    let profilelist = req.body.profile;
+
+    var fileName    = profilelist.replace('.profile-meta.xml','');
+    conn.metadata.read('Profile',fileName, function(err, metadata) {
+      if (err) { console.log('error: '+err); }
+      console.log('Meta: '+metadata);
+      var stringified = JSON.stringify(metadata);
+      console.log(metadata);
+      var builder = new xml2js.Builder();
+      var xml = builder.buildObject(metadata);
+
+      var formattedXml = format(xml, {
+          indentation: '    ',        
+          filter: (node) => node.type !== 'Comment', 
+          collapseContent: true,
+          lineSeparator: '\n'
+      });
+
+      //formattedXml = formattedXml.replace('&#xD;', '');
+
+      console.log(formattedXml);
+
+      fs.writeFile(profilePath+'/'+profilelist, formattedXml, function (err) {
+        if (err) return console.log(err);
+        console.log('salvato il file');
+      });
+    });
+    
+
+    
 });
 
 
