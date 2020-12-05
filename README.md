@@ -1,7 +1,7 @@
 # Profili SFDC  
 
-Questo tool permette di aggiungere / modificare la visibilità di metadati Salesforce sui propri XML. 
-E' possibile eseguire l'applicazione direttamente tramite eseguibile, piuttosto che avviando il **server.js** tramite comando node.
+Questo tool permette di aggiungere / modificare la visibilità di metadati Salesforce. 
+E' possibile eseguire l'applicazione direttamente tramite eseguibile, piuttosto che avviando il **server.js** con il comando node.
 **node server.js**
 
-L'applicazione verrà avviata sul **http://localhost:8080/**
+L'applicazione verrà avviata sulla porta 8080: **http://localhost:8080/**
