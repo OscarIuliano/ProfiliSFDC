@@ -251,7 +251,7 @@ loginButton.addEventListener('click',function(e){
 const getAllObject = document.getElementById('getAllObj');
 
 getAllObject.addEventListener('click',function(e){
-
+ 
   $("div.spanner").addClass("show");
   console.log('login button');
   fetch('/retrieveAllSObject', {method: 'GET'})
@@ -274,8 +274,7 @@ getAllObject.addEventListener('click',function(e){
         console.log(error);
         $("div.spanner").removeClass("show");
       })
-
-
+      
 });
 
 const getFields = document.getElementById('getAllField');
@@ -314,6 +313,7 @@ const getClass = document.getElementById('getAllclass');
 getClass.addEventListener('click',function(e){
 
   $("div.spanner").addClass("show");
+  
   console.log('login button');
   fetch('/retrieveAllClasses', {method: 'GET'})
       .then(response => response.json())
@@ -422,3 +422,215 @@ itemList.forEach(function(item, index, array) {
       })
   });
 });
+
+const buttonCollapse1 = document.getElementById('objectPermissions_button');
+buttonCollapse1.addEventListener('click', function(e) {
+  $('#objectPermissions').css('pointer-events', '');
+});
+
+const buttonCollapse2 = document.getElementById('pageAccesses_button');
+buttonCollapse2.addEventListener('click', function(e) {
+  $('#pageAccesses').css('pointer-events', '');
+});
+
+const buttonCollapse3 = document.getElementById('classAccesses_button');
+buttonCollapse3.addEventListener('click', function(e) {
+  $('#classAccesses').css('pointer-events', '');
+});
+
+const buttonCollapse4 = document.getElementById('customMetadata_button');
+buttonCollapse4.addEventListener('click', function(e) {
+  $('#customMetadata').css('pointer-events', '');
+});
+
+
+const getAllcustomMetadata = document.getElementById('getAllcustomMetadata');
+
+getAllcustomMetadata.addEventListener('click',function(e){
+
+  $("div.spanner").addClass("show");
+
+  fetch('/retrieveAllcustomMetadata', {method: 'GET'})
+      .then(response => response.json())
+      .then(data => {
+
+        data.forEach(function(item, index, array) {
+          console.log(item, index);
+    
+          if(item.name.endsWith("_mdt"))
+          {
+            var option = document.createElement("option");
+            option.text = item.name;
+            option.value = item.name;
+            var select = document.getElementById("customMetadata_select");
+            select.appendChild(option);
+          }
+          
+        });
+        
+        $("div.spanner").removeClass("show");
+      })
+      .catch(function(error) {
+        console.log(error);
+        $("div.spanner").removeClass("show");
+      })
+
+
+});
+
+var listOfRows = [];
+var custumMetaObj ='';
+function showFile(input) {
+  let file = input.files[0];
+  listOfRows = [];
+  $("div.spanner").addClass("show");
+  document.getElementById("container").innerHTML = "";
+    var reader = new FileReader();
+    reader.readAsText(file, "UTF-8");
+    reader.onload = function (evt) {
+        console.log(evt.target.result);
+        let data = evt.target.result;
+        // start the table
+        var html = '<table style="width:100%">';
+        
+        // split into lines
+        var rows = data.split("\n");
+        
+        // parse lines
+        var first_iteration = true;
+        
+        var fieldsName = [];
+        rows.forEach( function getvalues(ourrow) {
+          
+          
+          if(!first_iteration)
+          {
+          // start a table row
+            html += "<tr>";
+            
+            // split line into columns
+            var columns = ourrow.split(";");
+            
+            var objeElements = new Object();
+            columns.forEach( function (elemt,indexRow) {
+
+              html += "<td>" + elemt + "</td>";
+              console.log(fieldsName);
+              objeElements[fieldsName[indexRow]] = elemt;
+            });
+
+            listOfRows.push(objeElements);
+            
+            
+            // close row
+            html += "</tr>";
+          }
+          else
+          {
+            html += "<tr>";
+            
+            // split line into columns
+            var columns = ourrow.split(";");
+
+            if(columns[0]!='NameRow')
+            {
+              document.getElementById("container").innerHTML = "La prima colonna deve essere NameRow, con il nome della riga";
+              $("div.spanner").removeClass("show");
+              throw "La prima colonna deve essere NameRow, con il nome della riga";   
+              
+            }
+            else if(columns[1]!='Protected')
+            {
+              document.getElementById("container").innerHTML = "La seconda colonna deve essere Protected, con valore true/false";
+              $("div.spanner").removeClass("show");
+              throw "La seconda colonna deve essere Protected, con valore true/false";   
+            }
+
+            columns.forEach( function(elemt2, index) {
+
+              if(fieldsCustomMetadata.has(elemt2) || (index==0 || index==1))
+                html += "<th>" + elemt2 + "</th>";
+              else
+                html += '<th style="border: 4px solid #ff0000">' + elemt2 + '</th>';
+
+              console.log(index);
+              console.log(elemt2);
+              fieldsName.push(elemt2);
+              
+            });
+            
+            // close row
+            html += "</tr>";
+
+            first_iteration = false;
+          }
+
+          
+        });
+
+        console.log(listOfRows);
+        // close table
+        html += "</table>";
+        
+        // insert into div
+        $('#container').append(html);
+        $("div.spanner").removeClass("show");
+        $("#uploadFile").removeClass("disabled");
+        
+    }
+    reader.onerror = function (evt) {
+        document.getElementById("container").innerHTML = "error reading file";
+    }
+
+    
+}
+
+var fieldsCustomMetadata = new Map();
+
+function getDefinition(sel){
+
+  var objNameValue =  document.getElementById('customMetadata_select').value;
+  console.log(objNameValue);
+  custumMetaObj = sel.value;
+  fetch('/retrieveAllField/'+objNameValue, {method: 'GET'})
+  .then(response => response.json())
+  .then(dataM => {
+
+    dataM.forEach(function(item, index, array) {
+
+      console.log(item.name);
+      console.log(item.label);
+
+      fieldsCustomMetadata.set(item.label,item);
+      
+    });
+    $('#uploadFileSection').css('pointer-events', '');
+    $("div.spanner").removeClass("show");
+  })
+  .catch(function(error) {
+    console.log(error);
+    $("div.spanner").removeClass("show");
+  })
+
+}
+
+
+const uploadFileButton = document.getElementById('uploadFile');
+
+uploadFileButton.addEventListener('click',function(e){
+
+  console.log('Calling Upload');
+
+  fetch('/addCustomMetadata', {method: 'POST',headers: {'Content-Type': 'application/json'},body:JSON.stringify({ elementsArray: listOfRows,recordName:custumMetaObj})})
+      .then(response => response.text())
+      .then(data => {
+        console.log(data);
+        document.getElementById('textXML').value = data;
+      })
+      .catch(function(error) {
+        console.log(error);
+        $("div.spanner").removeClass("show");
+      })
+
+});
+

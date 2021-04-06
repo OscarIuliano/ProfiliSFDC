@@ -11,7 +11,7 @@
 
   <body>
     <div class="jumbotron"  style="padding:40px;">
-      <h1>Modifica sui Profili SFDC</h1>
+      <h1>Metadata SFDC</h1>
       <form>
         <div class="form-group">
           <label for="enviroment">Seleziona l'ambiente</label>
@@ -33,9 +33,10 @@
         <button id="loginBtton" class="btn btn-primary btn-lg" role="button">Login</button></p>         
       </div>
       <span id="login-result"></span>
-      <form>
-        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#objectPermissions">Open Object Permission</button>
-        <div class="panel panel-default collapse" id ='objectPermissions' style="pointer-events: none;">
+      <!--
+      <form>-->
+        <button type="button" class="btn btn-info" id ='objectPermissions_button' data-toggle="collapse" data-target="#objectPermissions">Open Object Permission</button>
+        <div class="panel panel-default collapse" id ='objectPermissions' >
           <div class="panel-body">
             <p>
               <select id="objectPermissions_select" name="objectItem"  class="form-control" >
@@ -43,7 +44,7 @@
               </select>
             </p>
             <p>
-              <button id="getAllObj" class="btn btn-primary btn-lg" href="#" role="button">Get all SObject</button>
+                <button id="getAllObj" class="btn btn-primary btn-lg" href="#" role="button">Get all SObject</button>
             </p>
             <p>
               <button id="agg0" class="aggiungiPartialXML btn btn-success btn-lg" href="#" role="button"  onclick="addPartialXML()">Aggiungi</button>
@@ -62,7 +63,7 @@
           </div>
         </div>
         
-        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#classAccesses">Open Class permission</button>
+        <button type="button" class="btn btn-info" id ='classAccesses_button' data-toggle="collapse" data-target="#classAccesses">Open Class permission</button>
         <div class="panel panel-default collapse" id ='classAccesses' style="pointer-events: none;">
           <div class="panel-body">
           <p>
@@ -79,7 +80,7 @@
           </div>
         </div>
 
-        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#pageAccesses">Open Pages Permission</button>
+        <button type="button" class="btn btn-info" id ='pageAccesses_button' data-toggle="collapse" data-target="#pageAccesses">Open Pages Permission</button>
         <div class="panel panel-default collapse" id ='pageAccesses' style="pointer-events: none;">
           <div class="panel-body">
           <p>
@@ -96,13 +97,38 @@
           </div>
         </div>
         <button type="button" class="btn btn-info" data-toggle="collapse" id ='getProfileInfo'>Get Profile info</button>
-      </form>
+
+        <button type="button" class="btn btn-info" id ='customMetadata_button' data-toggle="collapse" data-target="#customMetadata">Open CustomMetadata Type</button>
+        <div class="panel panel-default collapse" id ='customMetadata' style="pointer-events: none;">
+          <div class="panel-body">
+            <p>
+              <select id="customMetadata_select" name="customMetadataitem"  class="form-control" onchange="getDefinition(this)">
+                <option value="--NONE--">--NONE--</option>
+              </select>
+            </p>
+            <p>
+              <button id="getAllcustomMetadata" class="btn btn-primary btn-lg" href="#" role="button">Get CustomMetadata</button>
+            <p>
+              <p>
+                <button id="uploadFile" class="btn btn-success btn-lg disabled" href="#" role="button">Upload file</button>
+              <p>
+
+              <div id="uploadFileSection" style="pointer-events: none;"> 
+                <label class="form-label" for="customFile">Carica CSV Custom Metadata type Records</label>
+                <input type="file" class="form-control" id="customFile" onchange="showFile(this)"/>
+              </div>
+              <div id="container"></div>
+
+          </div>
+        </div>
+      <!--
+      </form>-->
     </div>
 
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-8">
-          <label for="path">Path profili</label><br>
+          <label for="path">Path metadati</label><br>
           <input id="inputPath" type="text" name="path"/>
           <span id="error-path" style="color:red;"></span>
           <button id="myButton" class="btn btn-primary btn-lg" href="#" role="button">Conferma</button>

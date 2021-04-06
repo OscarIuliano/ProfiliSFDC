@@ -302,6 +302,18 @@ app.get('/retrieveAllPage',(req,res)=>{
   // ...
 });
 
+app.get('/retrieveAllcustomMetadata',(req,res)=>{
+
+  conn.describeGlobal(function(err, result) {
+    if (err) { return console.error(err); }
+    console.log('Num of SObjects : ' + result.sobjects.length);
+  
+    return res.send(result.sobjects);
+  });
+  
+  // ...
+});
+
 app.get('/retrieveAllField/:object',(req,res)=>{
 
   let objectName = req.params.object;
@@ -370,9 +382,91 @@ app.post('/retrieveProfileFromOrg',(req,res)=>{
         console.log('salvato il file');
       });
     });
-    
+});
 
+app.post('/addCustomMetadata',(req,res)=>{
+
+  let itemToUpload = req.body.elementsArray;
+  let recordName  = req.body.recordName;
+
+  let baseXml = '';
+
+  console.log('Called');
+  console.log(itemToUpload);
+
+  try
+  {
+    fs.readFile(__dirname+'/public/config/customMetadatatype.xml', 'utf8', function(err, data){ 
+
+        itemToUpload.forEach( function(element, index) {
+            
+            baseXml = data;
+            var repeatElement = baseXml.substring(
+                baseXml.lastIndexOf("<values>"), 
+                baseXml.lastIndexOf("</values>")
+            );
+
+            baseXml = baseXml.replace(repeatElement+'</values>', '');
+            baseXml = baseXml.replace('</CustomMetadata>', '');
+            
+            var fieldsXMLElements ='';
+
+            var nameRecors = '';
+            for (var key in element) 
+            {   
+                var fieldValue = repeatElement;
+                if(key  ==  'NameRow')
+                {
+                    baseXml = baseXml.replace('{!0}',element[key]);
+                    nameRecors = element[key];
+                }
+                else if(key ==  'Protected')
+                    baseXml = baseXml.replace('{!1}',element[key]);
+                else
+                {
+                    console.log(fieldValue);
+                    fieldValue = fieldValue.replace('[FIELD NAME]',key);
+                    fieldValue = fieldValue.replace('[VALUE]',element[key]);
+                    //fieldValue = fieldValue.concat(fieldValue);
+
+                    baseXml = baseXml+fieldValue+'</values>';
+                    
+                }
+
+            }
+
+            baseXml = baseXml + '</CustomMetadata>';
+
+
+
+            var formattedXml = format(baseXml, {
+                indentation: '    ',        
+                filter: (node) => node.type !== 'Comment', 
+                collapseContent: true,
+                lineSeparator: '\n'
+            });
     
+    
+            fs.writeFile(profilePath+'/'+recordName.replace('__mdt','.')+nameRecors+'.xml', formattedXml, function (err) {
+            if (err) return console.log(err);
+            console.log('salvato il file');
+            });
+            
+                
+            
+
+        });
+
+        return res.send(baseXml);
+    });
+    
+  }
+  catch(e)
+  {
+    return res.send('c\'è stato un errore');
+  }
+  
+   
 });
 
 
