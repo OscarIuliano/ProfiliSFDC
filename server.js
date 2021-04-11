@@ -417,16 +417,17 @@ app.post('/addCustomMetadata',(req,res)=>{
                 var fieldValue = repeatElement;
                 if(key  ==  'NameRow')
                 {
-                    baseXml = baseXml.replace('{!0}',element[key]);
-                    nameRecors = element[key];
+                    baseXml = baseXml.replace('{!0}',element[key].value);
+                    nameRecors = element[key].value;
                 }
                 else if(key ==  'Protected')
-                    baseXml = baseXml.replace('{!1}',element[key]);
+                    baseXml = baseXml.replace('{!1}',element[key].value);
                 else
                 {
                     console.log(fieldValue);
                     fieldValue = fieldValue.replace('[FIELD NAME]',key);
-                    fieldValue = fieldValue.replace('[VALUE]',element[key]);
+                    fieldValue = fieldValue.replace('[VALUE]',element[key].value);
+                    fieldValue = fieldValue.replace('[type]',element[key].type);
                     //fieldValue = fieldValue.concat(fieldValue);
 
                     baseXml = baseXml+fieldValue+'</values>';

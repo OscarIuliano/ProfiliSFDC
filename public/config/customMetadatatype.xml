@@ -4,6 +4,6 @@
     <protected>{!1}</protected>
         <values>
             <field>[FIELD NAME]</field>
-            <value xsi:type="xsd:[type]">[VALUE]</value>
+            <value xsi:type="[type]">[VALUE]</value>
         </values>
 </CustomMetadata>

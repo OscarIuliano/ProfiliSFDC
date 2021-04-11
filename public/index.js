@@ -515,8 +515,18 @@ function showFile(input) {
             columns.forEach( function (elemt,indexRow) {
 
               html += "<td>" + elemt + "</td>";
-              console.log(fieldsName);
-              objeElements[fieldsName[indexRow]] = elemt;
+              console.log('fieldsName[indexRow] : ',fieldsName[indexRow]);
+              console.log('fieldName : ',fieldsName);
+              console.log('elemt : ',elemt);
+              console.log('from CSDM : ',fieldsCustomMetadata.get(fieldsName[indexRow]));
+
+              var objectElemet = new Object();
+              objectElemet.value = elemt;
+              
+              if(fieldsCustomMetadata.get(fieldsName[indexRow]))
+                objectElemet.type = fieldsCustomMetadata.get(fieldsName[indexRow]).soapType;
+
+              objeElements[fieldsName[indexRow]] = objectElemet;
             });
 
             listOfRows.push(objeElements);
@@ -549,7 +559,9 @@ function showFile(input) {
             columns.forEach( function(elemt2, index) {
 
               if(fieldsCustomMetadata.has(elemt2) || (index==0 || index==1))
+              {
                 html += "<th>" + elemt2 + "</th>";
+              }
               else
                 html += '<th style="border: 4px solid #ff0000">' + elemt2 + '</th>';
 
