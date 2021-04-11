@@ -1,6 +1,6 @@
-# Profili SFDC  
+# Gestione Metadati SFDC 
 
-Questo tool permette di aggiungere / modificare la visibilità di metadati Salesforce. 
+Questo tool permette di aggiungere / modificare metadati Salesforce. 
 E' possibile eseguire l'applicazione direttamente tramite eseguibile, piuttosto che avviando il **server.js** con il comando node.
 **node server.js**
 
