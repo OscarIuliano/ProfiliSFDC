@@ -448,7 +448,7 @@ app.post('/addCustomMetadata',(req,res)=>{
             });
     
     
-            fs.writeFile(profilePath+'/'+recordName.replace('__mdt','.')+nameRecors+'.xml', formattedXml, function (err) {
+            fs.writeFile(profilePath+'/'+recordName.replace('__mdt','.')+nameRecors+'.md-meta.xml', formattedXml, function (err) {
             if (err) return console.log(err);
             console.log('salvato il file');
             });

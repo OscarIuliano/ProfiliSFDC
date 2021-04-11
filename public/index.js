@@ -633,6 +633,14 @@ uploadFileButton.addEventListener('click',function(e){
 
   console.log('Calling Upload');
 
+  var inputPathJs = document.getElementById('inputPath').value;
+
+  if(inputPathJs==null || inputPathJs == undefined || inputPathJs=='')
+  {
+    document.getElementById('error-path').innerHTML = "Inserire un path valido";
+    return;
+  }
+
   fetch('/addCustomMetadata', {method: 'POST',headers: {'Content-Type': 'application/json'},body:JSON.stringify({ elementsArray: listOfRows,recordName:custumMetaObj})})
       .then(response => response.text())
       .then(data => {
