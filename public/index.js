@@ -519,14 +519,14 @@ function showFile(input) {
               console.log('fieldName : ',fieldsName);
               console.log('elemt : ',elemt);
               console.log('from CSDM : ',fieldsCustomMetadata.get(fieldsName[indexRow]));
-
+              console.log('from CSDM : ',fieldsCustomMetadata);
               var objectElemet = new Object();
               objectElemet.value = elemt;
               
-              if(fieldsCustomMetadata.get(fieldsName[indexRow]))
-                objectElemet.type = fieldsCustomMetadata.get(fieldsName[indexRow]).soapType;
+              if(fieldsCustomMetadata.get(fieldsName[indexRow].trim()))
+                objectElemet.type = fieldsCustomMetadata.get(fieldsName[indexRow].trim()).soapType;
 
-              objeElements[fieldsName[indexRow]] = objectElemet;
+              objeElements[fieldsName[indexRow].trim()] = objectElemet;
             });
 
             listOfRows.push(objeElements);
@@ -558,7 +558,9 @@ function showFile(input) {
 
             columns.forEach( function(elemt2, index) {
 
-              if(fieldsCustomMetadata.has(elemt2) || (index==0 || index==1))
+              console.log(fieldsCustomMetadata);
+              console.log(elemt2);
+              if(fieldsCustomMetadata.has(elemt2.trim()) || (index==0 || index==1))
               {
                 html += "<th>" + elemt2 + "</th>";
               }
@@ -567,7 +569,7 @@ function showFile(input) {
 
               console.log(index);
               console.log(elemt2);
-              fieldsName.push(elemt2);
+              fieldsName.push(elemt2.trim());
               
             });
             
@@ -610,8 +612,8 @@ function getDefinition(sel){
 
     dataM.forEach(function(item, index, array) {
 
-      console.log(item.name);
-      console.log(item.label);
+      console.log('terte',item.name);
+      console.log('terte',item.label);
 
       fieldsCustomMetadata.set(item.label,item);
       
