@@ -466,9 +466,25 @@ app.post('/addCustomMetadata',(req,res)=>{
   {
     return res.send('c\'è stato un errore');
   }
-  
-   
+
 });
+
+app.post('/deployToOrg',(req,res)=>{
+
+  var zipStream = fs.createReadStream(profilePath+'/'+"MyPackage.zip");
+  conn.metadata.deploy(zipStream, { checkOnly:true })
+  .complete(function(err, result) {
+    if (err) { console.error(err); }
+    console.log('done ? :' + result.done);
+    console.log('success ? : ' + result.true);
+    console.log('state : ' + result.state);
+    console.log('component errors: ' + result.numberComponentErrors);
+    console.log('components deployed: ' + result.numberComponentsDeployed);
+    console.log('tests completed: ' + result.numberTestsCompleted);
+  });
+
+});
+
 
 
 

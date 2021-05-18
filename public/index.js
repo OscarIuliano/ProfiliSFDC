@@ -615,7 +615,7 @@ function getDefinition(sel){
       console.log('terte',item.name);
       console.log('terte',item.label);
 
-      fieldsCustomMetadata.set(item.label,item);
+      fieldsCustomMetadata.set(item.name,item);
       
     });
     $('#uploadFileSection').css('pointer-events', '');
@@ -644,6 +644,33 @@ uploadFileButton.addEventListener('click',function(e){
   }
 
   fetch('/addCustomMetadata', {method: 'POST',headers: {'Content-Type': 'application/json'},body:JSON.stringify({ elementsArray: listOfRows,recordName:custumMetaObj})})
+      .then(response => response.text())
+      .then(data => {
+        console.log(data);
+        document.getElementById('textXML').value = data;
+      })
+      .catch(function(error) {
+        console.log(error);
+        $("div.spanner").removeClass("show");
+      })
+
+});
+
+const deployToOrg = document.getElementById('deployToOrg');
+
+deployToOrg.addEventListener('click',function(e){
+
+  console.log('Calling Upload');
+
+  var inputPathJs = document.getElementById('inputPath').value;
+
+  if(inputPathJs==null || inputPathJs == undefined || inputPathJs=='')
+  {
+    document.getElementById('error-path').innerHTML = "Inserire un path valido";
+    return;
+  }
+
+  fetch('/deployToOrg', {method: 'POST',headers: {'Content-Type': 'application/json'}})
       .then(response => response.text())
       .then(data => {
         console.log(data);
