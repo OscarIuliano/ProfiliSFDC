@@ -643,16 +643,24 @@ uploadFileButton.addEventListener('click',function(e){
     return;
   }
 
-  fetch('/addCustomMetadata', {method: 'POST',headers: {'Content-Type': 'application/json'},body:JSON.stringify({ elementsArray: listOfRows,recordName:custumMetaObj})})
-      .then(response => response.text())
-      .then(data => {
-        console.log(data);
-        document.getElementById('textXML').value = data;
-      })
-      .catch(function(error) {
-        console.log(error);
-        $("div.spanner").removeClass("show");
-      })
+  listOfRows.forEach(function getvalues(ourrow) {
+
+    var listOfRowscustom = [];
+    listOfRowscustom.push(ourrow);
+
+    fetch('/addCustomMetadata', {method: 'POST',headers: {'Content-Type': 'application/json'},body:JSON.stringify({ elementsArray: listOfRowscustom,recordName:custumMetaObj})})
+    .then(response => response.text())
+    .then(data => {
+      console.log(data);
+      document.getElementById('textXML').value = data;
+    })
+    .catch(function(error) {
+      console.log(error);
+      $("div.spanner").removeClass("show");
+    })
+
+  });
+ 
 
 });
 

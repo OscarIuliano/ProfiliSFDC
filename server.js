@@ -472,7 +472,7 @@ app.post('/addCustomMetadata',(req,res)=>{
 app.post('/deployToOrg',(req,res)=>{
 
   var zipStream = fs.createReadStream(profilePath+'/'+"MyPackage.zip");
-  conn.metadata.deploy(zipStream, { checkOnly:true })
+  conn.metadata.deploy(zipStream, { checkOnly:false })
   .complete(function(err, result) {
     if (err) { console.error(err); }
     console.log('done ? :' + result.done);
