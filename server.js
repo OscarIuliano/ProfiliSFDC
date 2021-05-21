@@ -433,13 +433,12 @@ app.post('/addCustomMetadata',(req,res)=>{
                     baseXml = baseXml+fieldValue+'</values>';
                     
                 }
-
             }
 
             baseXml = baseXml + '</CustomMetadata>';
 
-
-
+            baseXml = baseXml.replace(/(\r\n|\n|\r)/gm,"");
+            
             var formattedXml = format(baseXml, {
                 indentation: '    ',        
                 filter: (node) => node.type !== 'Comment', 
@@ -447,7 +446,8 @@ app.post('/addCustomMetadata',(req,res)=>{
                 lineSeparator: '\n'
             });
     
-    
+            
+            formattedXml = formattedXml+'\r\n';
             fs.writeFile(profilePath+'/'+recordName.replace('__mdt','.')+nameRecors+'.md-meta.xml', formattedXml, function (err) {
             if (err) return console.log(err);
             console.log('salvato il file');
