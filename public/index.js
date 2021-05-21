@@ -651,11 +651,11 @@ uploadFileButton.addEventListener('click',function(e){
     fetch('/addCustomMetadata', {method: 'POST',headers: {'Content-Type': 'application/json'},body:JSON.stringify({ elementsArray: listOfRowscustom,recordName:custumMetaObj})})
     .then(response => response.text())
     .then(data => {
-      console.log(data);
+      //console.log(data);
       document.getElementById('textXML').value = data;
     })
     .catch(function(error) {
-      console.log(error);
+      //console.log(error);
       $("div.spanner").removeClass("show");
     })
 

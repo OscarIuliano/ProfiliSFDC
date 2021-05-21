@@ -392,7 +392,7 @@ app.post('/addCustomMetadata',(req,res)=>{
   let baseXml = '';
 
   console.log('Called');
-  console.log(itemToUpload);
+  console.log(itemToUpload[0].NameRow);
 
   try
   {
@@ -424,7 +424,7 @@ app.post('/addCustomMetadata',(req,res)=>{
                     baseXml = baseXml.replace('{!1}',element[key].value);
                 else
                 {
-                    console.log(fieldValue);
+                    //console.log(fieldValue);
                     fieldValue = fieldValue.replace('[FIELD NAME]',key);
                     fieldValue = fieldValue.replace('[VALUE]',element[key].value);
                     fieldValue = fieldValue.replace('[type]',element[key].type);
@@ -450,7 +450,7 @@ app.post('/addCustomMetadata',(req,res)=>{
             formattedXml = formattedXml+'\r\n';
             fs.writeFile(profilePath+'/'+recordName.replace('__mdt','.')+nameRecors+'.md-meta.xml', formattedXml, function (err) {
             if (err) return console.log(err);
-            console.log('salvato il file');
+            //console.log('salvato il file');
             });
             
                 
