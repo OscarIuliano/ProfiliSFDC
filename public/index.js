@@ -669,7 +669,7 @@ const deployToOrg = document.getElementById('deployToOrg');
 deployToOrg.addEventListener('click',function(e){
 
   console.log('Calling Upload');
-
+  
   var inputPathJs = document.getElementById('inputPath').value;
 
   if(inputPathJs==null || inputPathJs == undefined || inputPathJs=='')
@@ -688,6 +688,58 @@ deployToOrg.addEventListener('click',function(e){
         console.log(error);
         $("div.spanner").removeClass("show");
       })
+
+});
+
+const deployToOrgCloudVersion = document.getElementById('deployToOrgCloudVersion');
+
+deployToOrgCloudVersion.addEventListener('click',function(e){
+
+  console.log('Calling Upload');
+
+  var completed = false;
+  listOfRows.forEach(function getvalues(ourrow,idx, array) {
+
+    var listOfRowscustom = [];
+    listOfRowscustom.push(ourrow);
+    
+    fetch('/addCustomMetadata', {method: 'POST',headers: {'Content-Type': 'application/json'},body:JSON.stringify({ elementsArray: listOfRowscustom,recordName:custumMetaObj,cloudVersion:true})})
+    .then(response => {console.log('end1');completed = true;})
+    .then(data => {
+      completed = true;
+      
+
+      if (idx === array.length - 1){ 
+
+        console.log('end12');
+
+        
+        fetch('/deployToOrgCloudVersion', {method: 'POST',headers: {'Content-Type': 'application/json'}})
+        .then(response => response.text())
+        .then(data => {
+          console.log(data);
+          document.getElementById('textXML').value = data;
+        })
+        .catch(function(error) {
+          console.log(error);
+          $("div.spanner").removeClass("show");
+        })
+      }
+      
+    })
+    .catch(function(error) {
+      //console.log(error);
+      $("div.spanner").removeClass("show");
+    })
+    
+    
+  });
+
+    
+  
+
+
+  
 
 });
 

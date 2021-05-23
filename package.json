@@ -16,6 +16,7 @@
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "jsforce": "^1.10.0",
+    "jszip": "^3.6.0",
     "node-salesforce": "^0.8.0",
     "path": "^0.12.7",
     "pkg": "^4.4.9",

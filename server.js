@@ -10,6 +10,8 @@ const format = require('xml-formatter');
 const sf = require('node-salesforce');
 const path = require('path');
 var jsforce = require('jsforce');
+var JSZip = require("jszip");
+
 
 
 var conn = new jsforce.Connection({
@@ -19,6 +21,8 @@ var conn = new jsforce.Connection({
 
 let profilePath = '';
 let permissionFile = '';
+
+var customMetadataToUpload= [];
 
 // serve files from the public directory
 app.use(express.static('public'));
@@ -389,6 +393,8 @@ app.post('/addCustomMetadata',(req,res)=>{
   let itemToUpload = req.body.elementsArray;
   let recordName  = req.body.recordName;
 
+  let cloudVersion = req.body.cloudVersion;
+
   let baseXml = '';
 
   console.log('Called');
@@ -448,10 +454,22 @@ app.post('/addCustomMetadata',(req,res)=>{
     
             
             formattedXml = formattedXml+'\r\n';
-            fs.writeFile(profilePath+'/'+recordName.replace('__mdt','.')+nameRecors+'.md-meta.xml', formattedXml, function (err) {
-            if (err) return console.log(err);
-            //console.log('salvato il file');
-            });
+
+            if(cloudVersion)
+            { 
+              var csdata = new Object();
+              csdata.name = nameRecors;
+              csdata.body = formattedXml;
+              csdata.recordName = recordName.replace('__mdt','.');
+              customMetadataToUpload.push(csdata);
+            }
+            else{
+              fs.writeFile(profilePath+'/'+recordName.replace('__mdt','.')+nameRecors+'.md-meta.xml', formattedXml, function (err) {
+                if (err) return console.log(err);
+                //console.log('salvato il file');
+                });
+            }
+            
             
                 
             
@@ -471,20 +489,71 @@ app.post('/addCustomMetadata',(req,res)=>{
 
 app.post('/deployToOrg',(req,res)=>{
 
-  var zipStream = fs.createReadStream(profilePath+'/'+"MyPackage.zip");
-  conn.metadata.deploy(zipStream, { checkOnly:false })
-  .complete(function(err, result) {
-    if (err) { console.error(err); }
-    console.log('done ? :' + result.done);
-    console.log('success ? : ' + result.true);
-    console.log('state : ' + result.state);
-    console.log('component errors: ' + result.numberComponentErrors);
-    console.log('components deployed: ' + result.numberComponentsDeployed);
-    console.log('tests completed: ' + result.numberTestsCompleted);
+
+  var zip = new JSZip();
+
+
+  //var zipStream = fs.createReadStream(profilePath+'/'+"MyPackage.zip");
+  
+
+  zip.folder("Root").file('package.xml',fs.readFileSync(__dirname+'/public/config/package.xml')).folder("customMetadata").file("hello.txt", "hello");
+  // zip now contains:
+  // folder_1/
+  // folder_1/folder_2/
+  // folder_1/folder_2/hello.txt
+
+  zip.generateAsync({type:"nodebuffer"})
+  .then(function (content) {
+    /*
+    conn.metadata.deploy(content, { checkOnly:false })
+    .complete(function(err, result) {
+      if (err) { console.error(err); }
+      console.log('done ? :' + result.done);
+      console.log('success ? : ' + result.true);
+      console.log('state : ' + result.state);
+      console.log('component errors: ' + result.numberComponentErrors);
+      console.log('components deployed: ' + result.numberComponentsDeployed);
+      console.log('tests completed: ' + result.numberTestsCompleted);
+    });
+    */
+   console.log('generate zip file');
+    //require("fs").writeFile("hello.zip", content, function(err){/*...*/});
   });
 
 });
 
+app.post('/deployToOrgCloudVersion',(req,res)=>{
+
+
+  var zip = new JSZip();
+
+  
+  customMetadataToUpload.forEach(function getvalues(row) {
+
+    zip.folder("Root").file('package.xml',fs.readFileSync(__dirname+'/public/config/package.xml')).folder("customMetadata").file(row.recordName+row.name+'.md-meta.xml', row.body);
+  });
+
+
+
+  zip.generateAsync({type:"nodebuffer"})
+  .then(function (content) {
+    
+    conn.metadata.deploy(content, { checkOnly:false })
+    .complete(function(err, result) {
+      if (err) { console.error(err); }
+      console.log('done ? :' + result.done);
+      console.log('success ? : ' + result.true);
+      console.log('state : ' + result.state);
+      console.log('component errors: ' + result.numberComponentErrors);
+      console.log('components deployed: ' + result.numberComponentsDeployed);
+      console.log('tests completed: ' + result.numberTestsCompleted);
+    });
+    
+  console.log('generate zip file');
+    //require("fs").writeFile("hello.zip", content, function(err){/*...*/});
+  });
+
+});
 
 
 
