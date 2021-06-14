@@ -1,0 +1,6 @@
+<items>
+    <customMetadataTypeAccesses>
+        <enabled>[boolean]</enabled>
+        <name>[CMDataTypeName]</name>
+    </customMetadataTypeAccesses>
+</items>

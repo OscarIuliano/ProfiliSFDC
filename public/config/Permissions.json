@@ -8,6 +8,10 @@
         "value": "apexClass"
     },
     {
+        "key": "customMetadataTypeAccesses",
+        "value": "name"
+    },
+    {
         "key": "fieldPermissions",
         "value": "field"
     },
