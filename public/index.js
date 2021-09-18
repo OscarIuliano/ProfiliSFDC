@@ -254,7 +254,7 @@ rimuovi.addEventListener('click', function(e){
   }
 
   let itemList = profileToAddIt.split(', ');
-  let result = 'oK fatto!';
+  let result = 'OK. fatto!';
   itemList.forEach(function(item, index, array) {
 
     fetch('/addItemsInProfile', {method: 'POST',headers: {'Content-Type': 'application/json'},body:JSON.stringify({profile: item,permission:permissionItem,permissionValue:valueToAdd,action:'remove'})})
@@ -266,7 +266,7 @@ rimuovi.addEventListener('click', function(e){
   });
   console.log('done');
   $("div.spanner").removeClass("show");
-  alert(result);
+  printMessage('success', result);
 });
 
 document.getElementById('profileList').onchange = function(e) {
@@ -611,7 +611,7 @@ console.log(profileToAddIt);
 let itemList = profileToAddIt.split(', ');
 let itemsProcessed = 0;
 
-let result = 'oK fatto!';
+let result = 'OK. fatto!';
 //$("div.spanner").addClass("show");
 itemList.forEach(function(item, index, array) {
   fetch('/retrieveProfileFromOrg', {method: 'POST', headers: {'Content-Type': 'application/json'},body:JSON.stringify({profile: item})})
