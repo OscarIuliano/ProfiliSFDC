@@ -377,14 +377,15 @@ app.post('/retrieveProfileFromOrg',(req,res)=>{
           lineSeparator: '\n'
       });
 
-      //formattedXml = formattedXml.replace('&#xD;', '');
+      formattedXml = formattedXml.replace('<root>', '<Profile xmlns="http://soap.sforce.com/2006/04/metadata">');
+      formattedXml = formattedXml.replace('</root>','</Profile>');
 
-      console.log(formattedXml);
+      console.log('FORMATTED XML ' + formattedXml);
 
       fs.writeFile(profilePath+'/'+profilelist, formattedXml, function (err) {
         if (err) return console.log(err);
         console.log('salvato il file');
-      });
+      })
     });
 });
 
