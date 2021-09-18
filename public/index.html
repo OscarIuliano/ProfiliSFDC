@@ -1,41 +1,47 @@
 <html>
 <head>
   <title>Tool Profili SFDC</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="index.css">
+  <link rel="stylesheet" type="text/css" href="modal.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css" rel="stylesheet"/>
   
 </head>
 
   <body>
     <div class="jumbotron"  style="padding:40px;">
-      <h1>Metadata SFDC</h1>
-      <form>
-        <div class="form-group">
-          <label for="enviroment">Seleziona l'ambiente</label>
-          <select class="form-control" id="enviromentPicklist">
-            <option value="https://test.salesforce.com">Sandbox</option>
-            <option value="https://login.salesforce.com">Production</option>
-          </select>
+      <h1>Metadata SFDC</h1><span id="env-tag" class="badge badge-secondary">not logged</span> <i id="logout-icon" class="fa fa-sign-out text-danger" aria-hidden="true" title="logout" style="display: none;"></i>
+       <div id="alert-area" class="mt-3"></div>
+<!-- LOGIN FORM -->
+  <div id ="login-form" class="form-row align-items-center">
+    <form id ="login-form" class="form-inline">
+    <div class="col-auto input-group">
+      <label for="enviromentPicklist" class="mb-2 mr-2">Ambiente:</label>
+      <select id="enviromentPicklist" class="form-control mb-2">
+        <option value="https://test.salesforce.com" selected>Sandbox</option>
+        <option value="https://login.salesforce.com">Production</option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <label class="sr-only" for="inlineFormInputGroup">Username</label>
+      <div class="input-group mb-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text">@</div>
         </div>
-        <div class="form-group">
-          <label for="email">Username</label><br>
-          <input id="username" type="email" name="email">
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label><br>
-          <input id="password" type="password" name ="password">
-        </div>
-      </form>
-      <div class="form-group">
-        <button id="loginBtton" class="btn btn-primary btn-lg" role="button">Login</button></p>         
+        <input type="email" name="email" class="form-control" id="username" placeholder="Username">
       </div>
-      <span id="login-result"></span>
-      <!--
-      <form>-->
-        <button type="button" class="btn btn-info" id ='objectPermissions_button' data-toggle="collapse" data-target="#objectPermissions">Open Object Permission</button>
+    </div>
+    <div class="col-auto">
+      <label class="sr-only" for="password">Password</label>
+      <input id="password" type="password" name ="password" class="form-control mb-2" placeholder="Password">
+    </div></form>
+    <div class="col-auto">
+      <button id="loginBtton" class="btn btn-primary mb-4" role="button">Login</button>
+    </div>
+  </div>
+    <!-- /LOGIN FORM -->
+    <!-- ACTION BUTTONS -->
+        <button type="button" class="btn btn-info needs-login" id ='objectPermissions_button' data-toggle="collapse" data-target="#objectPermissions">Open Object Permission</button>
         <div class="panel panel-default collapse" id ='objectPermissions' >
           <div class="panel-body">
             <p>
@@ -44,7 +50,7 @@
               </select>
             </p>
             <p>
-                <button id="getAllObj" class="btn btn-primary btn-lg" href="#" role="button">Get all SObject</button>
+                <button id="getAllObj" class="btn btn-primary btn-lg needs-login" href="#" role="button">Get all SObject</button>
             </p>
             <p>
               <button id="agg0" class="aggiungiPartialXML btn btn-success btn-lg" href="#" role="button"  onclick="addPartialXML()">Aggiungi</button>
@@ -63,7 +69,7 @@
           </div>
         </div>
         
-        <button type="button" class="btn btn-info" id ='classAccesses_button' data-toggle="collapse" data-target="#classAccesses">Open Class permission</button>
+        <button type="button" class="btn btn-info needs-login" id ='classAccesses_button' data-toggle="collapse" data-target="#classAccesses">Open Class permission</button>
         <div class="panel panel-default collapse" id ='classAccesses' style="pointer-events: none;">
           <div class="panel-body">
           <p>
@@ -72,7 +78,7 @@
             </select>
           </p>
           <p>
-            <button id="getAllclass" class="btn btn-primary btn-lg" href="#" role="button">Get all Classes</button>
+            <button id="getAllclass" class="btn btn-primary btn-lg" href="#" role="button">Aggiorna</button>
           </p>
           <p>
             <button id="agg2" class="aggiungiPartialXML btn btn-success btn-lg" href="#" role="button">Aggiungi</button>
@@ -80,7 +86,7 @@
           </div>
         </div>
 
-        <button type="button" class="btn btn-info" id ='pageAccesses_button' data-toggle="collapse" data-target="#pageAccesses">Open Pages Permission</button>
+        <button type="button" class="btn btn-info needs-login" id ='pageAccesses_button' data-toggle="collapse" data-target="#pageAccesses">Open Pages Permission</button>
         <div class="panel panel-default collapse" id ='pageAccesses' style="pointer-events: none;">
           <div class="panel-body">
           <p>
@@ -96,9 +102,9 @@
             </p>
           </div>
         </div>
-        <button type="button" class="btn btn-info" data-toggle="collapse" id ='getProfileInfo'>Get Profile info</button>
+        <button type="button" class="btn btn-info needs-login" data-toggle="collapse" id ='getProfileInfo'>Get Profile info</button>
 
-        <button type="button" class="btn btn-success" id ='customMetadata_button' data-toggle="collapse" data-target="#customMetadata">Open CustomMetadata Type</button>
+        <button type="button" class="btn btn-success needs-login" id ='customMetadata_button' data-toggle="collapse" data-target="#customMetadata">Open CustomMetadata Type</button>
         <div class="panel panel-default collapse" id ='customMetadata' style="pointer-events: none;">
           <div class="panel-body">
             <p>
@@ -107,7 +113,7 @@
               </select>
             </p>
             <p>
-              <button id="getAllcustomMetadata" class="btn btn-primary btn-lg" href="#" role="button">Get CustomMetadata</button>
+              <button id="getAllcustomMetadata" class="btn btn-primary btn-lg needs-login" href="#" role="button">Get CustomMetadata</button>
             <p>
               <p>
                 <button id="uploadFile" class="btn btn-success btn-lg disabled" href="#" role="button">Upload file</button>
@@ -129,23 +135,24 @@
 
           </div>
         </div>
-      <!--
-      </form>-->
+   
     </div>
-
+<!-- /ACTION BUTTONS -->
     
     <div class="container-fluid">
       <div class="row">
-        <div class="col-md-8">
-          <label for="path">Path metadati</label><br>
-          <input id="inputPath" type="text" name="path"/>
+          <div class="form-inline">
+          <div class="form-group mx-sm-3 mb-2">
+            <label for="inputPath" class="sr-only">Percorso file</label>
+            <input id="inputPath" type="text" name="path" class="form-control" placeholder="path">
+          </div>
+          <button  id="myButton" class="btn btn-primary mb-2 mr-2" href="#" role="button"><i id="select-folder-icon" class="fa fa-folder-open-o" aria-hidden="true"></i> Apri
+          </button>
           <span id="error-path" style="color:red;"></span>
-          <button id="myButton" class="btn btn-primary btn-lg" href="#" role="button">Conferma</button>
+          <button  id="selectAll" class="btn btn-primary mb-2" href="#" role="button" style="display: none;">Seleziona tutti
+          </button>
         </div>
-        <div class="col-md-4">
-
         </div>
-      </div>
       <div class="row">
         <div class="col-md-8">
           <select id="profileList" name="profileList" multiple class="form-control">
@@ -154,13 +161,14 @@
           <span id="error-profile"  style="color:red;"></span>
         </div>
         <div class="col-md-4">
-          <select id="permissionList" name="permissionItem"  class="form-control" >
+          <select id="permissionList" name="permissionItem"  class="form-control mb-2" >
             <option value="--NONE--">--NONE--</option>
           </select>
-          <textarea id="textXML" name="textXML" style="background-color: #383838;color:rgb(113, 216, 255);margin: 0px;height: 350px;overflow-y: auto;" cols="50" class="form-control" aria-label="With textarea"></textarea>
+          <textarea id="textXML" name="textXML" style="background-color: #383838;color:rgb(113, 216, 255);margin: 0px;height: 350px;overflow-y: auto;" cols="50" class="form-control mb-3" aria-label="With textarea"></textarea>
           <span id="error-xml" style="color:red;"></span>
-          <button id="addVisibility" class="btn btn-primary btn-lg" href="#" role="button">Aggiungi</button>
-          <button id="removeVisibility" class="btn btn-danger btn-lg"  href="#" role="button">Rimuovi</button>
+          <button id="addVisibility" class="btn btn-primary btn" href="#" role="button"><i class="fa fa-plus mr-1" aria-hidden="true"></i>Aggiungi
+          </button>
+          <button id="removeVisibility" class="btn btn-danger btn"  href="#" role="button"><i class="fa fa-trash-o mr-1" aria-hidden="true"></i>Rimuovi</button>
         </div>
       </div>
     </div>
@@ -170,6 +178,11 @@
       <div class="loader"></div>
       <p>Caricamento</p>
     </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="index.js"></script>
   </body>
-<script type="text/javascript" src="index.js"></script>
 </html>

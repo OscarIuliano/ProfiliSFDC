@@ -91,6 +91,11 @@ app.post('/profileList', (req, res)=>{
     
 });
 
+app.get('/checkConnection', (req, res)=>{
+  console.log('CONNECTION ' + conn.instanceUrl);
+  res.send(conn.instanceUrl);
+})
+
 app.get('/getPermission',(req,res)=>{
 
     console.log(__dirname);
@@ -265,10 +270,22 @@ app.post('/loginSFDC', (req,res) =>{
     console.log("Org ID: " + userInfo.organizationId);
     // ...
 
-    return res.send('Sei loggato in :'+conn.instanceUrl);
+    return res.send(conn.instanceUrl);
   });
 
 });
+
+app.get('/logoutSFDC', (req,res) =>{
+ //TODO: refresh page elements on logout (environment label, disable action buttons ...) 
+  console.log('logout button');
+
+  conn.logout(function(err) {
+    if (err) { return console.error(err); }
+    // now the session has been expired.
+    
+  });
+     return res.send(conn.instanceUrl);
+  });
 
 app.get('/retrieveAllSObject',(req,res)=>{
 
@@ -277,7 +294,6 @@ app.get('/retrieveAllSObject',(req,res)=>{
   console.log('Num of SObjects : ' + result.sobjects.length);
 
   return res.send(result.sobjects);
-  // ...
 });
 
 });
@@ -357,7 +373,7 @@ app.post('/retrieveProfileFromOrg',(req,res)=>{
       
     }); 
     */
-    console.log('getPRofile');
+    console.log('getProfile');
 
     let profilelist = req.body.profile;
 
