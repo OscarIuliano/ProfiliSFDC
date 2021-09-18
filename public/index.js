@@ -3,9 +3,39 @@ console.log('Client-side code running');
 var permissionAvailable;
 var initialXMl;
 var itemSelected;
+
+/**
+ * Onload, retrieves the last-used (if any exists) file path to the profiles folder.
+ * And checks if the connection is still active to avoid showing the login form at every refresh
+ * Sets the status and the environment below the page title.
+ */
+window.onload = (event) => {
+  document.getElementById('inputPath').value = localStorage.getItem('file-path');
+  fetch('/checkConnection', {method: 'GET'})
+      .then(response => response.text())
+      .then(data => {
+        if(data != ''){
+          document.getElementById('login-form').style.display = 'none';
+          setEnvLabel(data);
+          toggleButtonsBasedOnLogin(true);
+        }else{
+          toggleButtonsBasedOnLogin(false);
+        }
+      });
+};
+
+/*
+ * Enables action buttons based on the user status (logged-in or not)
+ * Since all the current actions actually need a connection with Salesforce to be performed
+ */
+function toggleButtonsBasedOnLogin(enable){
+  var elems = document.getElementsByClassName('needs-login');
+  for(var i = 0; i < elems.length; i++) {
+      elems[i].disabled = !enable;
+  }
+}
  
 fetch('/getPermission', {method: 'GET'})
-
 .then(response => response.json())
   .then(data => {
     console.log(data);
@@ -38,7 +68,19 @@ button.addEventListener('click', function(e) {
       .then(response => response.json())
       .then(data => {
         document.getElementById("profileList").size = '20';
-        document.getElementById("display").style = 'height: 353px;width: 506px;margin: 0px;';
+        document.getElementById("display").style = 'height: 353px;width: 100%;margin: 0px;';
+        button.innerHTML = '<i id="select-folder-icon" class="fa fa-refresh" aria-hidden="true"></i> Aggiorna';
+        button.classList.remove('btn-primary');
+        button.classList.add('btn-light');
+        if(data == "Errore nel path"){
+          printMessage('error', data);
+          return;
+        }
+        //at this point path is valid. Save for future use
+        localStorage.setItem('file-path',inputPathJs );
+        const selectAllButton = document.getElementById('selectAll');
+        selectAllButton.style.display = 'block';
+        
         data.forEach(function(item, index, array) {
           console.log(item, index);
 
@@ -47,7 +89,8 @@ button.addEventListener('click', function(e) {
           option.value = item;
           var select = document.getElementById("profileList");
           select.appendChild(option);
-        });
+          
+        })
       })
       .catch(function(error) {
         console.log(error);
@@ -58,10 +101,8 @@ button.addEventListener('click', function(e) {
 
 const selectItem = document.getElementById('permissionList');
 
-selectItem.addEventListener('change',function(e){
+/*selectItem.addEventListener('change',function(e){
 
-  alert(e.target.value);
-  
 
   var index = e.target.selectedIndex;
 
@@ -90,7 +131,48 @@ selectItem.addEventListener('change',function(e){
         document.getElementById('objectPermissions').style.pointerEvents = "all";
       
     });
-});
+});*/
+
+selectItem.addEventListener('change', (event)=> getXMLfragment(event.target) );
+
+function getXMLfragment(target){
+
+  //alert(e.target.value);
+  if(!target.value.includes('NONE')){
+    let profilesInvolved = getSelectedProfilesNumber();
+    let singularOrPlural = profilesInvolved > 1? ' profili' : ' profilo';
+    let message = profilesInvolved == 0 ? '. Seleziona i profili da modificare.' : ' su '+ profilesInvolved + singularOrPlural;
+    printMessage('warning', 'stai per modificare: ' + target.value + message);
+  }
+
+  //var index = target.selectedIndex;
+
+  var item = new Object();
+  item.text = target.text;
+  item.value = target.value;
+  itemSelected= item;
+
+  fetch('/getConfiguration?fileName='+target.value, {method: 'GET'})
+
+  .then(response => response.text())
+    .then(data => {
+      document.getElementById('textXML').value = data;
+      initialXMl = data;
+
+      permissionAvailable.forEach(function(item, index, array) {
+
+        if(document.getElementById(item.key)!=null)
+          document.getElementById(item.key).style.pointerEvents = "none";
+
+      });
+      console.log('Pointer event : '+target.value);
+      if(document.getElementById(target.value)!=null)
+        document.getElementById(target.value).style.pointerEvents = "all";
+      if(target.value == 'fieldPermissions')
+        document.getElementById('objectPermissions').style.pointerEvents = "all";
+      
+    });
+}
 
 const aggiungi = document.getElementById('addVisibility');
 var opts = [], opt;
@@ -99,7 +181,7 @@ aggiungi.addEventListener('click', function(e){
 
   $("div.spanner").addClass("show");
   let valueToAdd = document.getElementById('textXML').value;
-  console.log(valueToAdd);
+  console.log('VALUE TO ADD ' + valueToAdd.includes);
 
   let permissionItem = document.getElementById('permissionList').value;
   console.log(permissionItem);
@@ -112,6 +194,10 @@ aggiungi.addEventListener('click', function(e){
     document.getElementById('error-xml').innerHTML = "Xml non valido";
     $("div.spanner").removeClass("show");
     return;
+  }else if( valueToAdd.includes('[') ||  valueToAdd.includes(']')){
+    $("div.spanner").removeClass("show");
+    printMessage('error','Ci sono dei tag non sostituiti correttamente "[ e/o ]" ');
+    return;
   }
   if(profileToAddIt==null || profileToAddIt == undefined || profileToAddIt == '')
   {
@@ -121,7 +207,7 @@ aggiungi.addEventListener('click', function(e){
   }
 
   let itemList = profileToAddIt.split(', ');
-  let result = 'oK fatto!';
+  let result = 'OK fatto!';
   itemList.forEach(function(item, index, array) {
 
     fetch('/addItemsInProfile', {method: 'POST',headers: {'Content-Type': 'application/json'},body:JSON.stringify({profile: item,permission:permissionItem,permissionValue:valueToAdd})})
@@ -133,7 +219,9 @@ aggiungi.addEventListener('click', function(e){
   });
   console.log('done');
   $("div.spanner").removeClass("show");
-  alert(result);
+  //alert(result);
+  //printMessage('success',result);
+  $("#success_tic").modal();
 });
 
 const rimuovi = document.getElementById('removeVisibility');
@@ -154,6 +242,10 @@ rimuovi.addEventListener('click', function(e){
   {
     document.getElementById('error-xml').innerHTML = "Xml non valido";
     $("div.spanner").removeClass("show");
+    return;
+  }else if( valueToAdd.includes('[') ||  valueToAdd.includes(']')){
+    $("div.spanner").removeClass("show");
+    printMessage('error','Ci sono tag non sostituiti correttamente "[ e/o ]" ');
     return;
   }
   if(profileToAddIt==null || profileToAddIt == undefined || profileToAddIt == '')
@@ -186,7 +278,7 @@ document.getElementById('profileList').onchange = function(e) {
   
   // callback fn handles selected options
   getSelectedOptions(this, callback);
-  
+  toggleSelectAllButton();
   // remove ', ' at end of string
   var str = display.innerHTML.slice(0, -2);
   display.innerHTML = str;
@@ -224,6 +316,47 @@ function getSelectedOptions(sel, fn) {
   }
 }
 
+const selectAllButton = document.getElementById('selectAll');
+
+selectAllButton.addEventListener('click', function(e) {
+  
+  var profiles = document.getElementById("profileList");
+  
+    var i;
+    for (i = 0; i < profiles.length; i++) {
+      if(!profiles.options[i].selected){
+        profiles.options[i].selected = true;
+      }
+    }
+    toggleSelectAllButton();
+    getSelectedOptions(profiles, callback);
+});
+
+function toggleSelectAllButton(){
+  console.log('TOTAL ' + document.getElementById("profileList").length + ' SELECTED ' +getSelectedProfilesNumber() );
+  console.log(document.getElementById("profileList").length > getSelectedProfilesNumber());
+  document.getElementById('selectAll').disabled = !(document.getElementById("profileList").length > getSelectedProfilesNumber());
+}
+
+function getSelectedProfilesNumber(){
+  let profiles = document.getElementById("profileList");
+  let quantity = 0;
+    let i;
+    for (i = 0; i < profiles.length; i++) {
+      if(profiles.options[i].selected){
+          quantity++;
+      }
+    }
+    return quantity;
+}
+
+const enviromentPicklist = document.getElementById('enviromentPicklist');
+enviromentPicklist.addEventListener('change',function(e){
+  if(enviromentPicklist.value == 'https://login.salesforce.com'){
+    printMessage('warning', "Hai selezionato 'Produzione'. Le modifiche dirette in produzione sono sconsigliate.");
+  }
+});
+
 const loginButton = document.getElementById('loginBtton');
 
 loginButton.addEventListener('click',function(e){
@@ -237,7 +370,16 @@ loginButton.addEventListener('click',function(e){
   fetch('/loginSFDC', {method: 'POST',headers: {'Content-Type': 'application/json'},body:JSON.stringify({ username: usernameJs,password:passwordJs,enviroment:enviromentValue})})
       .then(response => response.text())
       .then(data => {
-        document.getElementById('login-result').innerHTML = data;
+
+        if(data.includes('error')){
+          printMessage('error', data);
+        }else{
+          printMessage('success', 'Sei loggato in '+ data);
+          document.getElementById('login-form').style.display = 'none';
+          setEnvLabel(data);
+          toggleButtonsBasedOnLogin(true);
+        }
+        
         $("div.spanner").removeClass("show");
       })
       .catch(function(error) {
@@ -247,6 +389,59 @@ loginButton.addEventListener('click',function(e){
 
 
 });
+
+function setEnvLabel(data){
+  let enviromentTag = document.getElementById('env-tag');
+  enviromentTag.classList.remove('badge-secondary');
+  enviromentTag.classList.add('badge-success');
+  enviromentTag.innerText = data;
+  document.getElementById('logout-icon').style.display = 'inline';
+}
+
+document.getElementById('logout-icon').addEventListener('click',function(e){
+console.log('LOOOOOOGOUT');
+
+
+
+fetch('/logoutSFDC', {method: 'GET'})
+      .then(response => response.text())
+      .then(data => {
+        console.log('LOGOUT DATA ' + data);
+      //  location.reload();
+      })
+      .catch(function(error) {
+        console.log(error);
+      })
+});
+
+function printMessage(type, msg){
+  console.log('print msg called');
+  let classToAdd = '';
+  let icon = '<i class="fa fa-exclamation-triangle mr-2"></i>'
+  switch(type) {
+    case 'error':
+      classToAdd = 'alert-danger';
+      break;
+    case 'warning':
+      classToAdd = 'alert-warning';
+      break;
+    default:
+      classToAdd = 'alert-success';
+      icon = '<i class="fa fa-check-circle mr-2"></i>'
+  }
+
+  document.getElementById('alert-area').innerHTML = '<div id ="alertMsg" class="alert alert-dismissible fade show" role="alert" ><div id="alert-text"></div><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+  document.getElementById('alert-text').innerHTML = icon + msg;
+  document.getElementById('alertMsg').classList.add(classToAdd);
+  autoCloseAlert();
+  
+}
+
+function autoCloseAlert(){
+  setTimeout(function() {
+    $(".alert-dismissible").alert('close');
+}, 2500);
+}
 
 const getAllObject = document.getElementById('getAllObj');
 
@@ -310,7 +505,9 @@ getFields.addEventListener('click',function(e){
 
 const getClass = document.getElementById('getAllclass');
 
-getClass.addEventListener('click',function(e){
+getClass.addEventListener('click', ()=> getClasses());
+
+function getClasses(){
 
   $("div.spanner").addClass("show");
   
@@ -339,7 +536,7 @@ getClass.addEventListener('click',function(e){
       })
 
 
-});
+}
 
 const getPages = document.getElementById('getAllPage');
 
@@ -407,20 +604,34 @@ button2.addEventListener('click', function(e) {
 console.log('button was clicked');
 
 let profileToAddIt = document.getElementById('display').value;
+if(profileToAddIt==null || profileToAddIt == undefined || profileToAddIt==''){
+printMessage('error', 'Seleziona almeno un profilo');
+return;
+}
+
 console.log(profileToAddIt);
 let itemList = profileToAddIt.split(', ');
-
+let itemsProcessed = 0;
 
 let result = 'oK fatto!';
+//$("div.spanner").addClass("show");
 itemList.forEach(function(item, index, array) {
-
   fetch('/retrieveProfileFromOrg', {method: 'POST', headers: {'Content-Type': 'application/json'},body:JSON.stringify({profile: item})})
-    .then(response => response.text())
+    .then(response => {
+    response.text();
+    console.log('ENTRAAAA' + itemsProcessed);
+    ++itemsProcessed;})
     .then(data => {
       console.log(data);
       result = data;
       })
-  });
+    //.catch(error => window.alert(error.message))
+    .catch(error => printMessage('error', error.message));
+  })
+  console.log('ITEMS IN LIST ' + itemList.length + ' PROCESSED ' + itemsProcessed);
+  if(itemsProcessed === itemList.length) {
+    $("div.spanner").removeClass("show");
+  }
 });
 
 const buttonCollapse1 = document.getElementById('objectPermissions_button');
@@ -435,6 +646,11 @@ buttonCollapse2.addEventListener('click', function(e) {
 
 const buttonCollapse3 = document.getElementById('classAccesses_button');
 buttonCollapse3.addEventListener('click', function(e) {
+  document.getElementById("permissionList").selectedIndex = 2;
+  getXMLfragment(document.getElementById("permissionList").options[2]);
+  if(document.getElementById("classAccesses_select").length === 1){//1 = option NONE
+    getClasses();
+  }
   $('#classAccesses').css('pointer-events', '');
 });
 

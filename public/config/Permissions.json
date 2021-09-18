@@ -9,7 +9,7 @@
     },
     {
         "key": "customMetadataTypeAccesses",
-        "value": "name"
+        "value": "customMetadata"
     },
     {
         "key": "fieldPermissions",
@@ -44,7 +44,7 @@
     },
     {
         "key": "userPermissions",
-        "value": "name"
+        "value": "userPermissions"
     },
     {
         "key": "customElement",
