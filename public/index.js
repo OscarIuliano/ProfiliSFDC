@@ -207,7 +207,7 @@ aggiungi.addEventListener('click', function(e){
   }
 
   let itemList = profileToAddIt.split(', ');
-  let result = 'OK fatto!';
+  let result = 'OK. fatto!';
   itemList.forEach(function(item, index, array) {
 
     fetch('/addItemsInProfile', {method: 'POST',headers: {'Content-Type': 'application/json'},body:JSON.stringify({profile: item,permission:permissionItem,permissionValue:valueToAdd})})
@@ -219,9 +219,7 @@ aggiungi.addEventListener('click', function(e){
   });
   console.log('done');
   $("div.spanner").removeClass("show");
-  //alert(result);
-  //printMessage('success',result);
-  $("#success_tic").modal();
+  printMessage('success',result);
 });
 
 const rimuovi = document.getElementById('removeVisibility');
