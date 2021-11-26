@@ -20,6 +20,10 @@
         "value": "recordType"
     },
     {
+        "key": "loginFlows",
+        "value": "loginFlows"
+    },    
+    {
         "key": "loginIpRanges",
         "value": "endAddress"
     },

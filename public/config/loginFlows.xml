@@ -1,0 +1,9 @@
+<items>
+    <loginFlows>
+        <flow>[flowName]</flow>
+        <flowType>[flowType]</flowType>
+        <friendlyName>[flowFriendlyName]</friendlyName>
+        <uiLoginFlowType>[flowUiLoginFlowType]</uiLoginFlowType>
+        <useLightningRuntime>[boolean]</useLightningRuntime>
+    </loginFlows>
+</items>
