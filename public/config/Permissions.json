@@ -16,6 +16,10 @@
         "value": "field"
     },
     {
+        "key": "flowAccesses",
+        "value": "flowAccesses"
+    },    
+    {
         "key": "layoutAssignments",
         "value": "recordType"
     },
