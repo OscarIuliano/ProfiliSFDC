@@ -1,0 +1,6 @@
+<items>
+    <flowAccesses>
+        <enabled>[boolean]</enabled>
+        <flow>[flowName]</flow>
+    </flowAccesses>
+</items>
