@@ -28,6 +28,10 @@
         "value": "loginFlows"
     },    
     {
+        "key": "loginHours",
+        "value": "loginHours"
+    },      
+    {
         "key": "loginIpRanges",
         "value": "endAddress"
     },
