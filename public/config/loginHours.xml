@@ -1,0 +1,18 @@
+<items>
+    <loginHours>
+        <mondayStart>[mondayStart]</mondayStart>
+        <mondayEnd>[mondayEnd]</mondayEnd>
+        <tuesdayStart>[tuesdayStart]</tuesdayStart>
+        <tuesdayEnd>[tuesdayEnd]</tuesdayEnd>
+        <wednesdayStart>[wednesdayStart]</wednesdayStart>
+        <wednesdayEnd>[wednesdayEnd]</wednesdayEnd>
+        <thursdayStart>[thursdayStart]</thursdayStart>
+        <thursdayEnd>[thursdayEnd]</thursdayEnd>
+        <fridayStart>[fridayStart]</fridayStart>
+        <fridayEnd>[fridayEnd]</fridayEnd>
+        <saturdayStart>[saturdayStart]</saturdayStart>
+        <saturdayEnd>[saturdayEnd]</saturdayEnd>
+        <sundayStart>[sundayStart]</sundayStart>
+        <sundayEnd>[sundayEnd]</sundayEnd>
+    </loginHours>
+</items>
